@@ -38,14 +38,14 @@ public class ArtistControllerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = standaloneSetup(artistController).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+        mockMvc = standaloneSetup(artistController).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
     }
 
     @Test
     public void statusNotFound_IfArtistDontExists() throws Exception {
         when(artistService.findByName(ARTIST_NAME)).thenReturn(Optional.<Artist>absent());
 
-        this.mockMvc.perform(
+        mockMvc.perform(
                 get("/artist/{name}", ARTIST_NAME).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -55,7 +55,7 @@ public class ArtistControllerTest {
     public void returnsArtistAndStatusOK_IfArtistDontExists() throws Exception {
         when(artistService.findByName(ARTIST_NAME)).thenReturn(Optional.of(ARTIST));
 
-        this.mockMvc.perform(
+        mockMvc.perform(
                 get("/artist/{name}", ARTIST_NAME).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -66,7 +66,7 @@ public class ArtistControllerTest {
     public void returnsAllArtistsAndStatusOK() throws Exception {
         when(artistService.findAll()).thenReturn(ImmutableSet.of(ARTIST));
 
-        this.mockMvc.perform(
+        mockMvc.perform(
                 get("/artist/").accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
