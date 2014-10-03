@@ -28,7 +28,7 @@ public class ArtistController {
     }
 
     @RequestMapping("/{name}")
-    public ResponseEntity<Artist> greeting(@PathVariable("name") String name) {
+    public ResponseEntity<Artist> find(@PathVariable("name") String name) {
         Optional<Artist> artistOptional = service.findByName(name);
         if (artistOptional.isPresent()) {
             return new ResponseEntity<>(artistOptional.get(), HttpStatus.OK);
@@ -45,5 +45,11 @@ public class ArtistController {
         headers.setLocation(uriComponents.toUri());
 
         return new ResponseEntity<>(artist, headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
+    public ResponseEntity<Artist> delete(@PathVariable("name") String name) {
+        service.delete(name);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

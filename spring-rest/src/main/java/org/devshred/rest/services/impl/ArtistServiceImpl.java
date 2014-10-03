@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Service
 public class ArtistServiceImpl implements ArtistService {
-    private static final Map<String, Artist> ARTIST_DB = new HashMap();
+    private static final Map<String, Artist> ARTIST_DB = new HashMap<>();
 
     static {
         ARTIST_DB.put("Paul", new Artist("Paul"));
@@ -38,7 +38,14 @@ public class ArtistServiceImpl implements ArtistService {
     @Override
     public Artist create(final String name) {
         Artist artist = new Artist(name);
-        ARTIST_DB.put(artist.getName(), artist);
+        ARTIST_DB.put(name, artist);
         return artist;
+    }
+
+    @Override
+    public void delete(String name) {
+        if (ARTIST_DB.containsKey(name)) {
+            ARTIST_DB.remove(name);
+        }
     }
 }

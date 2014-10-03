@@ -7,6 +7,10 @@ import java.util.Set;
 
 public interface ArtistService {
     Optional<Artist> findByName(String name);
+
     Set<Artist> findAll();
+
     Artist create(String name);
+
+    void delete(String name);
 }

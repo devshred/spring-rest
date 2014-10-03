@@ -6,6 +6,7 @@ import org.devshred.rest.domain.Artist;
 import org.devshred.rest.services.ArtistService;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -13,9 +14,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,8 +37,7 @@ public class ArtistControllerTest {
     ArtistService artistService;
 
     @InjectMocks
-    private
-    ArtistController artistController;
+    private ArtistController artistController;
 
     @Before
     public void setup() {
@@ -72,5 +76,20 @@ public class ArtistControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$.[0].name", is(ARTIST_NAME)));
+    }
+
+    @Test
+    public void deletesArtist() throws Exception {
+        doNothing().when(artistService).delete(ARTIST_NAME);
+
+        mockMvc.perform(
+                delete("/artist/{name}", ARTIST_NAME).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        verify(artistService).delete(captor.capture());
+        assertThat(captor.getValue(), is(ARTIST_NAME));
     }
 }
